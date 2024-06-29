@@ -13,23 +13,16 @@ class SongItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pushNamed('/edit-song', arguments: {
-          'model': model,
-        });
-      },
-      child: Card(
-        elevation: 0,
-        margin: const EdgeInsets.symmetric(horizontal: 9.0, vertical: 9.0),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: cartItem(context),
+    return Card(
+      elevation: 0,
+      margin: const EdgeInsets.symmetric(horizontal: 9.0, vertical: 9.0),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
         ),
+        child: cartItem(context),
       ),
     );
   }
@@ -44,7 +37,7 @@ class SongItem extends StatelessWidget {
           alignment: Alignment.center,
           margin: EdgeInsets.all(10),
           child: Image.network(
-            (model?.image == null || model?.image == "")
+            (model!.image == null || model!.image == "")
                 ? "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png"
                 : model!.image!,
             height: 70,
@@ -59,7 +52,7 @@ class SongItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                model!.title,
+                model!.title!,
                 style: const TextStyle(
                     color: Colors.black, fontWeight: FontWeight.bold),
               ),
@@ -78,6 +71,15 @@ class SongItem extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    GestureDetector(
+                      child: const Icon(Icons.edit),
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed('/edit-song', arguments: {
+                          'model': model,
+                        });
+                      },
+                    ),
                     GestureDetector(
                       child: const Icon(
                         Icons.delete,

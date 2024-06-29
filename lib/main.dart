@@ -13,10 +13,13 @@ class MyAppcafecitoDev extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(),
+      theme: ThemeData(primarySwatch: Colors.blue),
       title: "Cafecito Dev",
-      home: const MyHomeCafecito(),
-      routes: {'/edit-song': (context) => const AddCafecitoPage()},
+      routes: {
+        '/': (context) => MyHomeCafecito(),
+        '/add-song': (context) => AddCafecitoPage(),
+        '/edit-song': (context) => AddCafecitoPage(),
+      },
     );
   }
 }

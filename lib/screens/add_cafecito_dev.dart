@@ -14,6 +14,11 @@ class AddCafecitoPage extends StatefulWidget {
 
 class _AddCafecitoPageState extends State<AddCafecitoPage> {
   final _formKey = GlobalKey<FormState>();
+
+  bool isApiCallProcess = false;
+
+  bool isEditMode = false;
+
   final ApiServiceCafecito apiServiceCafecito = ApiServiceCafecito();
 
   TextEditingController titleSongController = TextEditingController();
@@ -28,7 +33,6 @@ class _AddCafecitoPageState extends State<AddCafecitoPage> {
       final title = titleSongController.text;
       final description = descriptionSongController.text;
       final image = imageSongController.text;
-      final mp3Song = tipeRecordSongController.text;
       final author = authorSongController.text;
 
       final newSong = SongModel(
@@ -36,7 +40,6 @@ class _AddCafecitoPageState extends State<AddCafecitoPage> {
           title: title,
           description: description,
           image: image,
-          mp3: mp3Song,
           author: author);
 
       try {
@@ -68,12 +71,6 @@ class _AddCafecitoPageState extends State<AddCafecitoPage> {
                       child: TextFormField(
                         controller: titleSongController,
                         decoration: InputDecoration(labelText: 'Titulo'),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter a title';
-                          }
-                          return null;
-                        },
                       ),
                     ),
                     MyBoxWidget(),
@@ -99,23 +96,15 @@ class _AddCafecitoPageState extends State<AddCafecitoPage> {
                         decoration:
                             InputDecoration(labelText: 'Url de la imagen'),
                         maxLines: 2,
-                      ),
-                    ),
-                    MyBoxWidget(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        controller: tipeRecordSongController,
-                        decoration:
-                            InputDecoration(labelText: 'Url del record Video'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter a URL';
+                            return 'Please enter an author';
                           }
                           return null;
                         },
                       ),
                     ),
+                    MyBoxWidget(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(

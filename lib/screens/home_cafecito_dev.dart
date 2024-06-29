@@ -1,7 +1,6 @@
 import 'package:cafecitodev/screens/add_cafecito_dev.dart';
 import 'package:cafecitodev/screens/song_item.dart';
 import 'package:cafecitodev/services/api_service_cafecito.dart';
-import 'package:cafecitodev/widget/icon_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 import 'package:cafecitodev/model/song_model.dart';
@@ -18,6 +17,7 @@ class _MyHomeCafecitoState extends State<MyHomeCafecito>
   final TextEditingController searchController = TextEditingController();
 
   bool isApiCallProcess = false;
+
   final ApiServiceCafecito apiServiceCafecito = ApiServiceCafecito();
 
   @override
@@ -54,12 +54,6 @@ class _MyHomeCafecitoState extends State<MyHomeCafecito>
               enabledBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black))),
         ),
-        actions: [
-          IconButtonWidget(
-              color: Theme.of(context).dialogBackgroundColor,
-              onTap: () {},
-              iconData: Icons.add_sharp)
-        ],
       ),
       body: ProgressHUD(
         child: loadSongs(),
@@ -68,46 +62,36 @@ class _MyHomeCafecitoState extends State<MyHomeCafecito>
         key: UniqueKey(),
       ),
       floatingActionButton: FloatingActionButton.extended(
-          onPressed: navigatetoAddPage, label: Icon(Icons.add)),
+          onPressed: () {
+            Navigator.pushNamed(context, '/add-song');
+          },
+          label: Icon(Icons.add)),
     );
-  }
-
-  void navigatetoAddPage() {
-    final route = MaterialPageRoute(
-      builder: (context) => AddCafecitoPage(),
-    );
-    Navigator.push(context, route);
   }
 
   Widget loadSongs() {
-    return FutureBuilder<List<SongModel>?>(
-      future: ApiServiceCafecito
-          .getSongs(), // Llama al método estático directamente a través de la clase
+    return FutureBuilder(
+      future: ApiServiceCafecito.getSongs(),
       builder: (
         BuildContext context,
-        AsyncSnapshot<List<SongModel>?> snapshot,
+        AsyncSnapshot<List<SongModel>?> model,
       ) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError) {
-          return Center(
-            child: Text('Error: ${snapshot.error}'),
-          );
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(
-            child: Text('No songs found'),
-          );
+        if (model.hasData) {
+          return songList(model.data);
         }
 
-        return songList(snapshot.data!);
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }
 
-  Widget songList(List<SongModel> songs) {
+  Widget songList(songs) {
     return ListView.builder(
+      shrinkWrap: true,
+      physics: const ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
       padding: const EdgeInsets.all(10),
       itemCount: songs.length,
       itemBuilder: (context, index) {
@@ -117,8 +101,13 @@ class _MyHomeCafecitoState extends State<MyHomeCafecito>
             setState(() {
               isApiCallProcess = true;
             });
-            // Aquí puedes agregar la lógica para eliminar la canción si es necesario
-          }, // Pasa la instancia de apiServiceCafecito a SongItem
+
+            ApiServiceCafecito.deleteSong(model.id).then((response) {
+              setState(() {
+                isApiCallProcess = false;
+              });
+            });
+          },
         );
       },
     );

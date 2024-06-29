@@ -1,47 +1,38 @@
 import 'dart:convert';
 
 class SongModel {
-  final int id;
-  final String title;
-  final String description;
-  final String image;
-  final String mp3;
-  final String author;
+  late int? id;
+  late String? title;
+  late String? description;
+  late String? image;
+  late String? author;
 
   SongModel({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.image,
-    required this.mp3,
-    required this.author,
+    this.id,
+    this.title,
+    this.description,
+    this.image,
+    this.author,
   });
 
-  factory SongModel.fromJson(Map<String, dynamic> json) {
-    return SongModel(
-      id: json['id'] as int,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      image: json['image'] as String,
-      mp3: json['mp3'] as String,
-      author: json['author'] as String,
-    );
+  SongModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    description = json['description'];
+    image = json['image'];
+    author = json['author'];
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'description': description,
-      'image': image,
-      'mp3': mp3,
-      'author': author
-    };
+    final _data = <String, dynamic>{};
+    _data['id'] = id;
+    _data['title'] = title;
+    _data['description'] = description;
+    _data['image'] = image;
+    _data['author'] = author;
+    return _data;
   }
 }
 
-List<SongModel> songsFromJson(String str) {
-  final jsonData = json.decode(str) as List;
-  return List<SongModel>.from(
-      jsonData.map((x) => SongModel.fromJson(x as Map<String, dynamic>)));
-}
+List<SongModel> songsFromJson(dynamic str) =>
+    List<SongModel>.from((str).map((x) => SongModel.fromJson(x)));
